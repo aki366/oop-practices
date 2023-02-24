@@ -23,3 +23,6 @@ end
 user.each do |user|
   puts "氏名: #{full_name(user)}, 年齢: #{user.age}"
 end
+
+p user[0].first_name # => "Alice"
+p user[0].first_mame # => undefined method `first_mame' for #<User:0x0000000100ae61d0
