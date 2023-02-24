@@ -13,5 +13,8 @@ user.each do |user|
   puts "氏名: #{full_name(user)}, 年齢: #{user[:age]}"
 end
 
-p user[0][:first_name] # => "Alice"
-p user[0][:first_mame] # => nil
+# クラスで定義したアリスを呼び出す
+# p user[0][:first_name] # => "Alice"
+
+# クラス内で定義したメソッドはメソッド名をタイポしてもnilになるので、不具合に気づきにくい
+# p user[0][:first_mame] # => nil
