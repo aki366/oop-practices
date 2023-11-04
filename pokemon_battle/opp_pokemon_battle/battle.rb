@@ -1,25 +1,33 @@
 class Battle
-  attr_reader :battle_pokemon_list
+  require 'json'
 
-  def initialize(battle_pokemon_list)
-    @battle_pokemon_list = battle_pokemon_list
+  attr_reader :pokemon_list
+
+  def initialize(ids)
+    @ids = ids
+  end
+
+  def pokemon_list
+    pokemons = JSON.parse(File.read('pokemons.json'), symbolize_names: true)
+    pokemons.select { |pokemon| @ids.include?(pokemon[:id]) }
   end
 
   def progress
     introduce_battle_pokemon
+    pokemon = pokemon_list
 
-    while battle_pokemon_list[0][:hp] > 0 && battle_pokemon_list[1][:hp] > 0
+    while pokemon[0][:hp] > 0 && pokemon[1][:hp] > 0
       case
-      when attack(battle_pokemon_list[0], battle_pokemon_list[1]) == 0
-        return print "\n#{battle_pokemon_list[1][:name]}はたおれた！#{battle_pokemon_list[0][:name]}の勝ちだ！\n"
-      when attack(battle_pokemon_list[1], battle_pokemon_list[0]) == 0
-        return print "\n#{battle_pokemon_list[0][:name]}はたおれた！#{battle_pokemon_list[1][:name]}の勝ちだ！\n"
+      when attack(pokemon[0], pokemon[1]) == 0
+        return print "\n#{pokemon[1][:name]}はたおれた！#{pokemon[0][:name]}の勝ちだ！\n"
+      when attack(pokemon[1], pokemon[0]) == 0
+        return print "\n#{pokemon[0][:name]}はたおれた！#{pokemon[1][:name]}の勝ちだ！\n"
       end
     end
   end
 
   def introduce_battle_pokemon
-    battle_pokemon_list.each do |pokemon|
+    pokemon_list.each do |pokemon|
       puts "#{pokemon[:name]}があらわれた！#{pokemon[:name]}のHPは#{pokemon[:hp]}だ！"
     end
     print "\n"
@@ -39,23 +47,3 @@ class Battle
     defender[:hp]
   end
 end
-
-pikachu = {
-  name: 'ピカチュウ',
-  hp: 20,
-  attacks: [
-    { name: '10万ボルト', power: 10 }
-  ]
-}
-
-hitokage = {
-  name: 'ヒトカゲ',
-  hp: 18,
-  attacks: [
-    { name: 'ひのこ', power:5 }
-  ]
-}
-
-battle_pokemon_list = [pikachu, hitokage]
-battle = Battle.new(battle_pokemon_list)
-battle.progress
